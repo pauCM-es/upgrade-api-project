@@ -53,6 +53,9 @@ const printSchema = new mongoose.Schema(
     },
     comments: {
       type: String
+    },
+    images: {
+      type: [String]
     }
   }
 )

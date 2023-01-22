@@ -43,6 +43,37 @@ const loginPost = (req, res, next) => {
   }
 }
 
+const logoutPost = async (req, res, next) => {
+  try {
+      const logoutUser = (error) => {
+          if (error) return next(error);
+
+          req.session.destroy(() => {
+              res.clearCookie("connect.sid");
+              return res.status(200).json("Te has deslogueado correctamente. Hasta pronto!");
+          });
+      };
+
+      await req.logout(logoutUser);
+  } catch (error) {
+      return next(error);
+  }
+};
+
+const checkSessionGet = (req, res, next) => {
+  try {
+      if(!req.user) {
+          return res.status(200).json(null);
+      }
+      const userWithoutPass = req.user.toObject();
+      Reflect.deleteProperty(userWithoutPass, 'password');
+      return res.status(200).json(userWithoutPass);
+  } catch (error) {
+      return next(error);
+  }
+};
+
+
 const getPrints = async (req, res, next) => {
   try {
     const allPrints = await Print.find({user: req.user._id}).populate({path: 'thingy', select: 'title'})
@@ -61,5 +92,7 @@ const getPrints = async (req, res, next) => {
 module.exports = {
   registerPost,
   loginPost,
-  getPrints
+  getPrints,
+  logoutPost,
+  checkSessionGet
 }
