@@ -9,7 +9,6 @@ const thingySchema = new mongoose.Schema (
 
     thingiverseId: { //id at thingiverse.com
       type: String,
-      unique: true
     },
 
     title: {
@@ -25,10 +24,6 @@ const thingySchema = new mongoose.Schema (
       type: String
     },
 
-    prints: {
-      type: [mongoose.Types.ObjectId],
-      ref: "prints"
-    }
   }
 )
 

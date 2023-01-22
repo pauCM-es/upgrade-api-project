@@ -5,7 +5,7 @@ const getPrints = async (req, res, next) => {
   try {
     console.log('USUARION LOGEADO: ', req.user);
     
-    const allPrints = await Print.find().populate({path: "thingy", select: "title"});
+    const allPrints = await Print.find().populate({path: "thingy", select: "title"}).populate({path: 'user' , select: 'alias'});
     return res.status(200).json(allPrints);
   }
   catch(error) {
@@ -27,8 +27,8 @@ const getPrint = async (req, res, next) => {
 //POST
 const createPrint = async (req, res, next) => {
   try {
-    const printToCreate = new Print(req.body);
-    console.log(printToCreate)
+    const data = {...req.body , user: req.user._id}    //*AÑADE LA ID DEL USUARIO LOGEADO a la propiedad user:
+    const printToCreate = new Print(data);
     const created = await printToCreate.save();
     return res.status(201).json(created);
   }

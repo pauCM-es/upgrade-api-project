@@ -1,7 +1,8 @@
 const passport = require('passport');
+const Print = require('../prints/print.model');
 
 //REGISTER
-const registerPost = async (req, res, next) => {
+const registerPost = (req, res, next) => {
   try {
     const done = (error, user) => {
       if (error) return next(error);
@@ -23,7 +24,7 @@ const registerPost = async (req, res, next) => {
 }
 
 //LOGIN
-const loginPost = async (req, res, next) => {
+const loginPost = (req, res, next) => {
   try {
     const done = (error, user) => {
       if (error) return next(error);
@@ -42,8 +43,23 @@ const loginPost = async (req, res, next) => {
   }
 }
 
+const getPrints = async (req, res, next) => {
+  try {
+    const allPrints = await Print.find({user: req.user._id}).populate({path: 'thingy', select: 'title'})
+    return res.status(200)
+              .json({
+                user: req.user.alias,
+                prints: allPrints
+              });
+  }
+  catch (error) {
+    return next(error);
+  }
+}
+
 
 module.exports = {
   registerPost,
-  loginPost
+  loginPost,
+  getPrints
 }

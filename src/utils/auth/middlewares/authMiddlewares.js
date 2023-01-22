@@ -7,6 +7,8 @@ const isAuth = (req, res, next) => {
     error.status = 401;
     return next(error);
   }
+
+  return next();
 }
 
 module.exports = isAuth

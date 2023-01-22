@@ -1,9 +1,10 @@
 const Thingy = require('./thingy.model');
+const Print = require('../prints/print.model')
 
 //GET
 const getThingies = async (req, res, next) => {
   try {
-    const thingies = await Thingy.find().populate('prints');
+    const thingies = await Thingy.find().populate({path: 'user' , select: 'alias'});
     return res.status(200).json(thingies);
   }
   catch (error) {
@@ -14,8 +15,9 @@ const getThingies = async (req, res, next) => {
 const getThingy = async (req, res, next) => {
   try {
     const { id } = req.params;
-    const thingy = await Thingy.findById(id);
-    return res.status(200).json(thingy)
+    const thingy = await Thingy.findById(id).populate({path: 'user' , select: 'alias'});
+    const filterPrints = await Print.find({thingy: id}) //*LOS PRINTS LOS MUESTRA FILTRANDO LA COLECCION DE PRINTS Y MOSTRANDO LOS QUE TIENEN EL ID QUE CORRESPONDE A ESTE THINGY
+    return res.status(200).json({thingy: thingy, prints: filterPrints})
   }
   catch (error) {
     return next(error)
@@ -25,7 +27,9 @@ const getThingy = async (req, res, next) => {
 //POST
 const createThingy = async (req, res, next) => {
   try {
-    const thingyToCreate = new Thingy(req.body);
+    const data = {...req.body , user: req.user._id}    //*AÑADE LA ID DEL USUARIO LOGEADO 
+    const thingyToCreate = new Thingy(data);
+
     const created = await thingyToCreate.save();
     return res.status(201).json(created);
   }
