@@ -2,6 +2,11 @@ const mongoose = require('mongoose');
 
 const thingySchema = new mongoose.Schema (
   {
+    user: {
+      type: mongoose.Types.ObjectId,
+      ref: "users"
+    },
+
     thingiverseId: { //id at thingiverse.com
       type: String,
       unique: true
@@ -21,7 +26,7 @@ const thingySchema = new mongoose.Schema (
     },
 
     prints: {
-      type: mongoose.Types.ObjectId,
+      type: [mongoose.Types.ObjectId],
       ref: "prints"
     }
   }

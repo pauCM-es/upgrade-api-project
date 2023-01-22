@@ -3,8 +3,19 @@ const Thingy = require('./thingy.model');
 //GET
 const getThingies = async (req, res, next) => {
   try {
-    const thingies = await Thingy.find();
+    const thingies = await Thingy.find().populate('prints');
     return res.status(200).json(thingies);
+  }
+  catch (error) {
+    return next(error)
+  }
+}
+
+const getThingy = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const thingy = await Thingy.findById(id);
+    return res.status(200).json(thingy)
   }
   catch (error) {
     return next(error)
@@ -51,6 +62,7 @@ const deleteThing = async (req, res, next) => {
 
 module.exports = {
   getThingies,
+  getThingy,
   createThingy,
   editThingy,
   deleteThing
